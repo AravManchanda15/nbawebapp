@@ -65,8 +65,8 @@ function Dashboard() {
   return (
    <Box
   sx={{
-    maxWidth: { xs: "100vw", md: 1380 },
-    width: { xs: "98vw", md: "90vw" },
+    maxWidth: { xs: "100vw", md: 1080 }, // set to 1080 or 1200px
+    width: { xs: "98vw", md: "75vw" },   // set to 80vw or even 70vw for more margin
     mx: "auto",
     mt: 5,
     p: { xs: 2, sm: 4 },
@@ -77,6 +77,7 @@ function Dashboard() {
     mb: 5,
   }}
 >
+
 
       {/* Viz Switcher */}
       <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
