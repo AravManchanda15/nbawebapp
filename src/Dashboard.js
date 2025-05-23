@@ -63,20 +63,21 @@ function Dashboard() {
   if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
-    <Box
-      sx={{
-        maxWidth: { xs: "100vw", md: 1380 },
-        width: { xs: "98vw", md: "90vw" },
-        mx: "auto",
-        mt: 5,
-        p: { xs: 2, sm: 4 },
-        bgcolor: "#fff",
-        borderRadius: 4,
-        boxShadow: 6,
-        minHeight: "75vh",
-        mb: 5,
-      }}
-    >
+   <Box
+  sx={{
+    maxWidth: { xs: "100vw", md: 1380 },
+    width: { xs: "98vw", md: "90vw" },
+    mx: "auto",
+    mt: 5,
+    p: { xs: 2, sm: 4 },
+    bgcolor: "#fff",
+    borderRadius: 4,
+    boxShadow: 6,
+    minHeight: "75vh",
+    mb: 5,
+  }}
+>
+
       {/* Viz Switcher */}
       <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
         <Button
