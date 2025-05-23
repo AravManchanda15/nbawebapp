@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/nbawebapp/static/js/main.bc578da8.js",
+    "index.html": "/nbawebapp/index.html",
+    "main.bc578da8.js.map": "/nbawebapp/static/js/main.bc578da8.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.bc578da8.js"
+  ]
+}
