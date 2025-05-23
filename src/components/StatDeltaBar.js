@@ -65,7 +65,8 @@ function StatDeltaBar({ data, stat, year1, year2 }) {
               const abbr = Object.keys(teamAbbrMap).find(
                 key => key.replace(/\*$/, "").trim() === payload.value
               );
-              const imgSrc = abbr ? "/logos/" + teamAbbrMap[abbr] : "";
+              const imgSrc = abbr ? process.env.PUBLIC_URL + "/logos/" + teamAbbrMap[abbr] : "";
+
               return (
                 <g transform={`translate(${x},${y + 12})`}>
                   {imgSrc ? (
