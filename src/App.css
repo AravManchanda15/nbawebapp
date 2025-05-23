@@ -4,6 +4,9 @@ body {
   background-attachment: fixed;
 }
 
+body {
+  zoom: 0.9; /* or try 0.85 for more */
+}
 
 .MuiPaper-root {
   border-radius: 18px !important;
