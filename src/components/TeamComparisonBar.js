@@ -76,7 +76,7 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
     return [...filtered].sort((a, b) => Number(b[stat]) - Number(a[stat]));
   }, [filtered, stat]);
 
-  const LOGO_SIZE = 43.5;
+  const LOGO_SIZE = 42;
   const renderLogoLabel = (props) => {
     const { x, y, width, value } = props;
     const logoSrc = getTeamLogo(value);

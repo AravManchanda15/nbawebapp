@@ -85,7 +85,7 @@ function StatDeltaBar({ data, stat, year1, year2 }) {
   }
 
   // === LOGO ABOVE BAR ===
-  const LOGO_SIZE = 43;
+  const LOGO_SIZE = 42;
   const renderLogoLabel = (props) => {
     const { x, y, width, value } = props;
     const logoSrc = getTeamLogo(value);

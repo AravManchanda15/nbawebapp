@@ -48,7 +48,7 @@ function BestWorstSeasons({ data, stat, setStat, statKeys }) {
   );
 
   // Logo above bar, just like in TeamComparisonBar.js
-  const LOGO_SIZE = 43;
+  const LOGO_SIZE = 42;
   const renderLogoLabel = (props) => {
     const { x, y, width, value } = props;
     const logoSrc = getTeamLogo(value);

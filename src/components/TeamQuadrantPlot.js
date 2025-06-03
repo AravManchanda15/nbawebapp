@@ -87,7 +87,7 @@ function TeamQuadrantPlot({ data, year, seasonType }) {
     return null;
   };
 
-  const LOGO_SIZE = 30;
+  const LOGO_SIZE = 40;
   const renderLogoLabel = (props) => {
     const { x, y, value } = props;
     if (x === undefined || y === undefined || value === undefined) {
