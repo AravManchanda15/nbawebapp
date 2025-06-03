@@ -3,6 +3,7 @@ import useNBAData from "./hooks/useNBAData";
 import TeamComparisonBar from "./components/TeamComparisonBar";
 import StatDeltaBar from "./components/StatDeltaBar";
 import BestWorstSeasons from "./components/BestWorstSeasons";
+import TeamQuadrantPlot from "./components/TeamQuadrantPlot";
 import statLabels from "./data/statLabels";
 
 // Material UI imports
@@ -27,7 +28,6 @@ function getStatKeys(data) {
 function Dashboard() {
   const { data, loading, error } = useNBAData();
 
-  // Only regular season data
   const regularData = useMemo(
     () => data.filter(d => d.season_type === "regular"),
     [data]
@@ -50,13 +50,15 @@ function Dashboard() {
   const [viz, setViz] = useState("team-comparison");
 
   useEffect(() => {
-    if (!years.includes(year)) setYear(years[0]);
-    if (!years.includes(year1)) setYear1(years[1] || years[0]);
-    if (!years.includes(year2)) setYear2(years[0]);
+    if (years.length > 0) {
+      if (!years.includes(year)) setYear(years[0]);
+      if (!years.includes(year1)) setYear1(years[1] || years[0]);
+      if (!years.includes(year2)) setYear2(years[0]);
+    }
   }, [years, year, year1, year2]);
 
   useEffect(() => {
-    if (stat && !statKeys.includes(stat)) {
+    if (stat && statKeys.length > 0 && !statKeys.includes(stat)) {
       setStat("");
     }
   }, [statKeys, stat]);
@@ -88,6 +90,13 @@ function Dashboard() {
           onClick={() => setViz("best-worst")}
         >
           Best/Worst Seasons
+        </Button>
+        <Button
+          variant={viz === "quadrant-plot" ? "contained" : "outlined"}
+          color="primary"
+          onClick={() => setViz("quadrant-plot")}
+        >
+          Offensive vs. Defensive Plot
         </Button>
       </Stack>
 
@@ -243,25 +252,64 @@ function Dashboard() {
             </Typography>
           )}
         </>
+      ) : viz === "quadrant-plot" ? (
+        <>
+          <Box sx={{ mb: 4 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <FormControl size="small" sx={{ minWidth: 300 }}>
+                <InputLabel id="year-select-quadrant-label">Year</InputLabel>
+                <Select
+                  labelId="year-select-quadrant-label"
+                  value={year}
+                  label="Year"
+                  onChange={e => setYear(Number(e.target.value))}
+                >
+                  {years.map(y => (
+                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Box>
+          {(!year && years.length > 0) && (
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                color: "#184189",
+                mt: 8,
+                mb: 4,
+                fontWeight: 500,
+                fontSize: { xs: 28, md: 36 }
+              }}
+            >
+              Choose a year to view the Offensive vs. Defensive Plot!
+            </Typography>
+          )}
+        </>
       ) : (
         <BestWorstSeasons
           data={regularData}
           stat={stat}
           setStat={setStat}
           statKeys={statKeys}
+          years={years}
+          year={year}
+          setYear={setYear}
+          loading={loading}
         />
       )}
 
       {/* Visualization */}
-      {viz === "team-comparison" ? (
-        stat
-          ? <TeamComparisonBar data={regularData} stat={stat} year={year} seasonType="regular" />
-          : null
-      ) : viz === "stat-delta" ? (
-        stat
-          ? <StatDeltaBar data={regularData} stat={stat} year1={year1} year2={year2} />
-          : null
-      ) : null}
+      {viz === "team-comparison" && stat && years.length > 0 && (
+        <TeamComparisonBar data={regularData} stat={stat} year={year} seasonType="regular" />
+      )}
+      {viz === "stat-delta" && stat && years.length > 0 && (
+        <StatDeltaBar data={regularData} stat={stat} year1={year1} year2={year2} />
+      )}
+      {viz === "quadrant-plot" && year && years.length > 0 && (
+        <TeamQuadrantPlot data={regularData} year={year} seasonType="regular" />
+      )}
     </Box>
   );
 }

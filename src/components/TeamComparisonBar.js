@@ -56,6 +56,7 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
     );
   };
 
+  
   const filtered = useMemo(
     () =>
       data.filter(
@@ -148,4 +149,6 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
   );
 }
 
+
 export default TeamComparisonBar;
+
