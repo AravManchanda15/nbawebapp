@@ -108,7 +108,7 @@ function StatDeltaBar({ data, stat, year1, year2 }) {
         {isPercentStat(stat) ? " (%)" : ""}
         {perGameStats.includes(stat) ? " per game" : ""}
       </h2>
-      <ResponsiveContainer width="100%" height={550}>
+      <ResponsiveContainer width="105%" height={412}>
         <BarChart data={deltas} margin={{ left: 10, right: 24, top: 32, bottom: 48 }}>
           <XAxis
             dataKey="Team"

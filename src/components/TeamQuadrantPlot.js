@@ -119,7 +119,7 @@ function TeamQuadrantPlot({ data, year, seasonType }) {
       <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0px 0 20px" }}>
         Offensive Output vs. Defensive Activity – {year} ({seasonType})
       </h2>
-      <ResponsiveContainer width="100%" height={550}>
+      <ResponsiveContainer width="105%" height={412}>
         <ScatterChart
           margin={{
             top: 20,
@@ -127,6 +127,7 @@ function TeamQuadrantPlot({ data, year, seasonType }) {
             bottom: 20,
             left: 20,
           }}
+          barCategoryGap="15%"
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
           <XAxis

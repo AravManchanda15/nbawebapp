@@ -104,29 +104,39 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
         {perGameStats.includes(stat) ? " per game" : ""} among NBA – {year}
       </h2>
 
-      <ResponsiveContainer width="100%" height={550}>
+      <ResponsiveContainer width="110%" height={412}>
         <BarChart
           data={sorted}
           margin={{ left: 10, right: 24, top: 28, bottom: 40 }}
+           barCategoryGap="15%"
         >
-          <XAxis
-            dataKey="Team"
-            interval={0}
-            height={32}
-            tick={({ x, y, payload }) => {
-              const teamFullName = payload.value;
-              const abbr = teamAbbrMap[teamFullName]?.split(".")[0].toUpperCase().slice(0, 3) || "";
-              return (
-                <g transform={`translate(${x},${y + 16})`}>
-                  <text x={0} y={0} textAnchor="middle" fill="#444" fontSize={14} fontWeight="bold">
-                    {abbr}
-                  </text>
-                </g>
-              );
-            }}
-            stroke="#444"
-          />
-          <YAxis
+<XAxis
+  dataKey="Team"
+  interval={0}
+  height={32}
+  tickMargin={10}       // add vertical space between axis line and labels
+  minTickGap={20}       // ensure at least 20px horizontal gap between adjacent labels
+  tick={({ x, y, payload }) => {
+    const teamFullName = payload.value;
+    const abbr =
+      teamAbbrMap[teamFullName]?.split(".")[0].toUpperCase().slice(0, 3) || "";
+    return (
+      <g transform={`translate(${x}, ${y + 16})`}>
+        <text
+          x={0}
+          y={0}
+          textAnchor="middle"
+          fill="#444"
+          fontSize={14}
+          fontWeight="bold"
+        >
+          {abbr}
+        </text>
+      </g>
+    );
+  }}
+  stroke="#444"
+/>          <YAxis
             stroke="#444"
             width={108}
             tickFormatter={formatTick}

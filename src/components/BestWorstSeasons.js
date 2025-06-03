@@ -97,10 +97,11 @@ function BestWorstSeasons({ data, stat, setStat, statKeys }) {
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }} color={barColor === "#22c55e" ? "success.main" : "error.main"}>
           {title}
         </Typography>
-        <ResponsiveContainer width="100%" height={450}>
+        <ResponsiveContainer width="105%" height={412}>
           <BarChart
             data={dataArr}
             margin={{ left: 10, right: 24, top: 28, bottom: 40 }}
+             barCategoryGap="15%"
           >
             <XAxis
               dataKey="Team"
