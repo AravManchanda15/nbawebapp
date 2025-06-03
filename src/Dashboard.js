@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import useNBAData from "./hooks/useNBAData";
 import TeamComparisonBar from "./components/TeamComparisonBar";
 import StatDeltaBar from "./components/StatDeltaBar";
+import BestWorstSeasons from "./components/BestWorstSeasons";
 import statLabels from "./data/statLabels";
 
 // Material UI imports
@@ -18,7 +19,7 @@ function getStatKeys(data) {
   if (!data.length) return [];
   return Object.keys(data[0]).filter(
     key =>
-      !["Year", "Team", "season_type"].includes(key) &&
+      !["Year", "Team", "season_type", "unnamed: 0", "Unnamed: 0"].includes(key) &&
       typeof data[0][key] === "number"
   );
 }
@@ -41,8 +42,9 @@ function Dashboard() {
   );
 
   const statKeys = useMemo(() => getStatKeys(regularData), [regularData]);
+
+  const [stat, setStat] = useState("");
   const [year, setYear] = useState(() => years[0] || 2023);
-  const [stat, setStat] = useState(() => statKeys[0] || "");
   const [year1, setYear1] = useState(() => years[1] || years[0] || 2022);
   const [year2, setYear2] = useState(() => years[0] || 2023);
   const [viz, setViz] = useState("team-comparison");
@@ -54,8 +56,8 @@ function Dashboard() {
   }, [years, year, year1, year2]);
 
   useEffect(() => {
-    if (!statKeys.includes(stat) && statKeys.length > 0) {
-      setStat(statKeys[0]);
+    if (stat && !statKeys.includes(stat)) {
+      setStat("");
     }
   }, [statKeys, stat]);
 
@@ -63,21 +65,7 @@ function Dashboard() {
   if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
-   <Box
-  sx={{
-    maxWidth: { xs: "100vw", md: 1380 },
-    width: { xs: "98vw", md: "90vw" },
-    mx: "auto",
-    mt: 5,
-    p: { xs: 2, sm: 4 },
-    bgcolor: "#fff",
-    borderRadius: 4,
-    boxShadow: 6,
-    minHeight: "75vh",
-    mb: 5,
-  }}
->
-
+    <Box sx={{ maxWidth: 1200, margin: "0 auto", px: 2, py: 4 }}>
       {/* Viz Switcher */}
       <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
         <Button
@@ -94,87 +82,186 @@ function Dashboard() {
         >
           Stat Delta (Year-Over-Year)
         </Button>
+        <Button
+          variant={viz === "best-worst" ? "contained" : "outlined"}
+          color="primary"
+          onClick={() => setViz("best-worst")}
+        >
+          Best/Worst Seasons
+        </Button>
       </Stack>
 
       {/* Controls */}
       {viz === "team-comparison" ? (
-        <Box sx={{ mb: 4 }}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <FormControl size="small" sx={{ minWidth: 140 }}>
-              <InputLabel>Year</InputLabel>
-              <Select
-                value={year}
-                label="Year"
-                onChange={e => setYear(Number(e.target.value))}
-              >
-                {years.map(y => (
-                  <MenuItem key={y} value={y}>{y}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 200 }}>
-              <InputLabel>Stat</InputLabel>
-              <Select
-                value={stat}
-                label="Stat"
-                onChange={e => setStat(e.target.value)}
-              >
-                {statKeys.map(s => (
-                  <MenuItem key={s} value={s}>{statLabels[s] || s}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </Box>
+        <>
+          <Box sx={{ mb: 4 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <FormControl size="small" sx={{ minWidth: 300 }}>
+                <InputLabel id="year-select-label">Year</InputLabel>
+                <Select
+                  labelId="year-select-label"
+                  value={year}
+                  label="Year"
+                  onChange={e => setYear(Number(e.target.value))}
+                >
+                  {years.map(y => (
+                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl size="small" sx={{ minWidth: 180 }}>
+                {stat ? (
+                  <>
+                    <InputLabel id="stat-select-label">Stat</InputLabel>
+                    <Select
+                      labelId="stat-select-label"
+                      value={stat}
+                      label="Stat"
+                      onChange={e => setStat(e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="" disabled>
+                        <span style={{ color: "#bbb" }}>Select a stat</span>
+                      </MenuItem>
+                      {statKeys.map(s => (
+                        <MenuItem key={s} value={s}>{statLabels[s] || s}</MenuItem>
+                      ))}
+                    </Select>
+                  </>
+                ) : (
+                  <Select
+                    value=""
+                    displayEmpty
+                    onChange={e => setStat(e.target.value)}
+                    sx={{ fontWeight: 600, fontSize: "1.1rem" }}
+                  >
+                    <MenuItem value="" disabled>
+                      <span style={{ color: "#bbb" }}>Select a stat</span>
+                    </MenuItem>
+                    {statKeys.map(s => (
+                      <MenuItem key={s} value={s}>{statLabels[s] || s}</MenuItem>
+                    ))}
+                  </Select>
+                )}
+              </FormControl>
+            </Stack>
+          </Box>
+          {!stat && (
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                color: "#184189",
+                mt: 8,
+                mb: 4,
+                fontWeight: 500,
+                fontSize: { xs: 28, md: 36 }
+              }}
+            >
+              Choose a stat to view NBA team comparisons!
+            </Typography>
+          )}
+        </>
+      ) : viz === "stat-delta" ? (
+        <>
+          <Box sx={{ mb: 4 }}>
+            <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+              <FormControl size="small" sx={{ minWidth: 110 }}>
+                <InputLabel>Year 1</InputLabel>
+                <Select
+                  value={year1}
+                  label="Year 1"
+                  onChange={e => setYear1(Number(e.target.value))}
+                >
+                  {years.map(y => (
+                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl size="small" sx={{ minWidth: 110 }}>
+                <InputLabel>Year 2</InputLabel>
+                <Select
+                  value={year2}
+                  label="Year 2"
+                  onChange={e => setYear2(Number(e.target.value))}
+                >
+                  {years.map(y => (
+                    <MenuItem key={y} value={y}>{y}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl size="small" sx={{ minWidth: 180 }}>
+                {stat ? (
+                  <>
+                    <InputLabel id="stat-select-label-delta">Stat</InputLabel>
+                    <Select
+                      labelId="stat-select-label-delta"
+                      value={stat}
+                      label="Stat"
+                      onChange={e => setStat(e.target.value)}
+                      displayEmpty
+                    >
+                      <MenuItem value="" disabled>
+                        <span style={{ color: "#bbb" }}>Select a stat</span>
+                      </MenuItem>
+                      {statKeys.map(s => (
+                        <MenuItem key={s} value={s}>{statLabels[s] || s}</MenuItem>
+                      ))}
+                    </Select>
+                  </>
+                ) : (
+                  <Select
+                    value=""
+                    displayEmpty
+                    onChange={e => setStat(e.target.value)}
+                    sx={{ fontWeight: 600, fontSize: "1.1rem" }}
+                  >
+                    <MenuItem value="" disabled>
+                      <span style={{ color: "#bbb" }}>Select a stat</span>
+                    </MenuItem>
+                    {statKeys.map(s => (
+                      <MenuItem key={s} value={s}>{statLabels[s] || s}</MenuItem>
+                    ))}
+                  </Select>
+                )}
+              </FormControl>
+            </Stack>
+          </Box>
+          {!stat && (
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                color: "#184189",
+                mt: 8,
+                mb: 4,
+                fontWeight: 500,
+                fontSize: { xs: 28, md: 36 }
+              }}
+            >
+              Choose a stat to view year-over-year NBA stat changes!
+            </Typography>
+          )}
+        </>
       ) : (
-        <Box sx={{ mb: 4 }}>
-          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-            <FormControl size="small" sx={{ minWidth: 110 }}>
-              <InputLabel>Year 1</InputLabel>
-              <Select
-                value={year1}
-                label="Year 1"
-                onChange={e => setYear1(Number(e.target.value))}
-              >
-                {years.map(y => (
-                  <MenuItem key={y} value={y}>{y}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 110 }}>
-              <InputLabel>Year 2</InputLabel>
-              <Select
-                value={year2}
-                label="Year 2"
-                onChange={e => setYear2(Number(e.target.value))}
-              >
-                {years.map(y => (
-                  <MenuItem key={y} value={y}>{y}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ minWidth: 200 }}>
-              <InputLabel>Stat</InputLabel>
-              <Select
-                value={stat}
-                label="Stat"
-                onChange={e => setStat(e.target.value)}
-              >
-                {statKeys.map(s => (
-                  <MenuItem key={s} value={s}>{statLabels[s] || s}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </Box>
+        <BestWorstSeasons
+          data={regularData}
+          stat={stat}
+          setStat={setStat}
+          statKeys={statKeys}
+        />
       )}
 
       {/* Visualization */}
       {viz === "team-comparison" ? (
-        <TeamComparisonBar data={regularData} stat={stat} year={year} seasonType="regular" />
-      ) : (
-        <StatDeltaBar data={regularData} stat={stat} year1={year1} year2={year2} />
-      )}
+        stat
+          ? <TeamComparisonBar data={regularData} stat={stat} year={year} seasonType="regular" />
+          : null
+      ) : viz === "stat-delta" ? (
+        stat
+          ? <StatDeltaBar data={regularData} stat={stat} year1={year1} year2={year2} />
+          : null
+      ) : null}
     </Box>
   );
 }

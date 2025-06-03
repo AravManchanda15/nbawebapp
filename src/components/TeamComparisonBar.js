@@ -17,6 +17,8 @@ const perGameStats = [
   "FG", "FGA", "3P", "3PA", "2P", "2PA", "FT", "FTA", "MP"
 ];
 
+const ascendingStats = ["Rk", "Rank", "Seed"]; // add more if needed
+
 function TeamComparisonBar({ data, stat, year, seasonType }) {
   function isPercentStat(stat) {
     const label = statLabels[stat] || stat;
@@ -45,7 +47,7 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
     }
 
     return (
-      <div style={{ background: "#fff", border: "1px solid #ddd", padding: 12, borderRadius: 10 }}>
+      <div style={{ background: "#f3f4f6", border: "1px solid #ddd", padding: 12, borderRadius: 10 }}>
         <div style={{ fontWeight: 700, marginBottom: 4 }}>{cleanTeam}</div>
         <div style={{ color: "#2563eb", fontWeight: 600 }}>
           {statLabel} : {value}
@@ -67,14 +69,13 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
   );
 
   const sorted = useMemo(() => {
-    if (seasonType === "playoff" && stat === "Rk") {
+    if (ascendingStats.includes(stat)) {
       return [...filtered].sort((a, b) => Number(a[stat]) - Number(b[stat]));
     }
     return [...filtered].sort((a, b) => Number(b[stat]) - Number(a[stat]));
-  }, [filtered, stat, seasonType]);
+  }, [filtered, stat]);
 
-  // 25% bigger logo (from 28px to 35px)
-  const LOGO_SIZE = 43.5  ;
+  const LOGO_SIZE = 43.5;
   const renderLogoLabel = (props) => {
     const { x, y, width, value } = props;
     const logoSrc = getTeamLogo(value);
@@ -82,7 +83,7 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
       <image
         href={logoSrc}
         x={x + width / 2 - LOGO_SIZE / 2}
-        y={y - LOGO_SIZE - 2} // a little gap above the bar
+        y={y - LOGO_SIZE - 2}
         width={LOGO_SIZE}
         height={LOGO_SIZE}
         style={{ pointerEvents: "none" }}
@@ -90,25 +91,22 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
     );
   };
 
-  return (
-    <div style={{
-      background: "#fff",
-      borderRadius: 18,
-      padding: 0,
-      width: "100%",
-      maxWidth: 2200,
-      margin: "0 auto"
-    }}>
-     <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0px 0 0" }}>
-  {statLabels[stat] || stat}
-  {isPercentStat(stat) ? " (%)" : ""}
-  {perGameStats.includes(stat) ? " per game" : ""} among NBA – {year}
-</h2>
+  if (!stat) {
+    return null;
+  }
 
-  <ResponsiveContainer width="100%" height={550}>
+  return (
+  <div> 
+      <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0px 0 0" }}>
+        {statLabels[stat] || stat}
+        {isPercentStat(stat) ? " (%)" : ""}
+        {perGameStats.includes(stat) ? " per game" : ""} among NBA – {year}
+      </h2>
+
+      <ResponsiveContainer width="100%" height={550}>
         <BarChart
           data={sorted}
-          margin={{ left: 10, right: 24, top: 28, bottom: 40  }}
+          margin={{ left: 10, right: 24, top: 28, bottom: 40 }}
         >
           <XAxis
             dataKey="Team"
@@ -138,7 +136,7 @@ function TeamComparisonBar({ data, stat, year, seasonType }) {
               offset: 32,
               style: { textAnchor: "middle", fontWeight: 600, fontSize: 18 }
             }}
-            tick={{ fontSize: 13  , fill: "#444" }}
+            tick={{ fontSize: 13, fill: "#444" }}
           />
           <Tooltip content={<CustomTooltip />} />
           <Bar dataKey={stat} fill="#3b82f6" radius={8}>

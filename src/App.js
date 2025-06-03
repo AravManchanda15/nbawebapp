@@ -22,7 +22,7 @@ function App() {
   <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
     <img
       src={process.env.PUBLIC_URL + "/nba.png"}
-      alt="NBA"
+      alt="NBA"n
       style={{
         height: "120%",   // Logo fills the AppBar vertically!
         marginRight: 33,
