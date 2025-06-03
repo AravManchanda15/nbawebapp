@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/nbawebapp/static/js/main.26353aa2.js",
-    "index.html": "/nbawebapp/index.html",
-    "main.26353aa2.js.map": "/nbawebapp/static/js/main.26353aa2.js.map"
+    "main.js": "/static/js/main.edc8c84a.js",
+    "index.html": "/index.html",
+    "main.edc8c84a.js.map": "/static/js/main.edc8c84a.js.map"
   },
   "entrypoints": [
-    "static/js/main.26353aa2.js"
+    "static/js/main.edc8c84a.js"
   ]
 }
